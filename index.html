@@ -69,40 +69,143 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button onclick="consoleLog()">Console Log</button>
+      <button onclick="consoleError()">Console Error</button>
+      <button onclick="consoleCount()">Console Count</button>
+      <button onclick="consoleWarn()">Console Warn</button>
+      <button onclick="consoleAssert()">Console Assert</button>
+      <button onclick="consoleClear()">Console Clear</button>
+      <button onclick="consoleDir()">Console Dir</button>
+      <button onclick="consoleDirXML()">Console dirxml</button>
+      <button onclick="consoleGroupStart()">Console Group Start</button>
+      <button onclick="consoleGroupEnd()">Console Group End</button>
+      <button onclick="consoleTable()">Console Table</button>
+      <button onclick="startTimer()">Start Timer</button>
+      <button onclick="endTimer()">End Timer</button>
+      <button onclick="consoleTrace()">Console Trace</button>
+      <button onclick="globalError()">Trigger a Global Error</button>
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "375bc68974cd475b835168c6e0cea9ba"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+    TrackJS.track('Testing TrackJS!');
+  </script>
+
+  <script>
+    class InputError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "InputError";
+      }
+    }
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
-      e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        e.preventDefault();
+        let output = document.querySelector('output');
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        if(isNaN(firstNum) || isNaN(secondNum)) {
+          throw new InputError("Inputs should be numbers");
+        }
+        let operator = document.querySelector('#operator').value;
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }
+      catch (err){
+        console.log(err);
+      }
+      finally {
+        console.log("Test");
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
-    // Start your code here
-    // You may move this JS to another file if you wish
-  </script>
+    function consoleLog() {
+        console.log("Console log");
+    }
+
+    function consoleError() {
+        console.error("Console error");
+    }
+
+    var count = 1;
+    function consoleCount() {
+        console.log("count is ", count);
+        count++;
+    }
+
+    function consoleWarn() {
+        console.warn("Console warn");
+    }
+
+    function consoleAssert() {
+        const x = 15;
+        const y = 13;
+        const reason = 'x is expected to be less than y';
+        console.assert(x < y, {x, y, reason});
+    }
+
+    function consoleClear() {
+        console.clear();
+        count = 1;
+    }
+
+    function consoleDir() {
+        console.dir(document.head);
+    }
+
+    function consoleDirXML() {
+        console.dirxml(document);
+    }
+
+    const label = "Epic group";
+    function consoleGroupStart() {
+        console.group(label);
+    }
+
+    function consoleGroupEnd() {
+        console.groupEnd(label);
+    }
+
+    function consoleTable() {
+        console.table([
+            {
+              first: 'Avery',
+              last: 'Pham',
+            },
+            {
+              first: 'Thomas',
+              last: 'Powell',
+            },
+            {
+              first: 'Alan',
+              last: 'Turing',
+            }
+          ]);
+    }
+
+    function startTimer() {
+        console.time();
+    }
+
+    function endTimer() {
+        console.timeEnd();
+    }
+
+    function consoleTrace() {
+        console.trace();
+    }
+
+    function globalError() {
+        noFunction();
+    }
+  </script> 
 </body>
 
 </html>
